@@ -1,0 +1,118 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node* Prev;
+    struct node* Next;
+
+}Node;
+
+Node* head, * tail;
+
+void insert_Beginning(Node* start) {
+    Node* new, *ptr;
+    int num;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = num;
+
+    ptr = start;
+    while (ptr->Next != start) {
+        ptr = ptr->Next;
+    }
+    ptr->Next = new;
+    new->Prev = ptr;
+    new->Next = start;
+    start->Prev = new;
+    head = new;
+}
+
+void insert_End(Node* start) {
+    Node* new, * ptr;
+    int num;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = num;
+    ptr = start;
+    while (ptr->Next != start) {
+        ptr = ptr->Next;
+    }
+    ptr->Next = new;
+    new->Prev = ptr;
+    new->Next = start;
+    start->Prev = new;
+    tail = new;
+}
+
+void delete_First(Node* start) {
+    if (start->Next->Next == start) {
+        printf("Underflow\n");
+        return;
+    }
+
+    Node* ptr;
+    ptr = start;
+    while (ptr->Next != start) {
+        ptr = ptr->Next;
+    }
+    ptr->Next = start->Next;
+    start->Next->Prev = ptr;
+    free(start);
+    head = ptr->Next;
+}
+
+void delete_Last(Node* start) {
+    if (start->Next->Next == start) {
+        printf("Underflow\n");
+        return;
+    }
+    Node* ptr;
+    ptr = start;
+    while (ptr->Next != start) {
+        ptr = ptr->Next;
+    }
+    ptr->Prev->Next = start;
+    start->Prev = ptr->Prev;
+    tail = ptr->Prev;
+    free(ptr);
+ 
+}
+void travel_List() {
+    Node* ptr;
+
+    ptr = head;
+    while (ptr->Next != head) {
+        printf("%d ", ptr->data);
+        ptr = ptr->Next;
+    }
+    printf("%d\n", ptr->data);
+
+}
+int main() {
+    head = (Node*)malloc(sizeof(Node));
+    tail = (Node*)malloc(sizeof(Node));
+    head->data = 10;
+    tail->data = 20;
+    head->Prev = tail;
+    head->Next = tail;
+    tail->Prev = head;
+    tail->Next = head;
+
+    insert_Beginning(head);
+    travel_List();
+
+    insert_End(head);
+    travel_List();
+
+    delete_First(head);
+    travel_List();
+
+    delete_Last(head);
+    travel_List();
+
+}
