@@ -1,0 +1,222 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct node
+{
+    int data;
+    struct node* Prev;
+    struct node* Next;
+
+}Node;
+
+Node* head;
+Node* tail;
+
+void insert_Beginning(Node* start);
+void insert_End(Node* start);
+void insert_After(Node* start); // 끝 노드 뒤에 넣을거면 insert_End 사용
+void insert_Before(Node* start);// 첫 노드 앞에 넣을거면 insert_Beginning 사용
+void delete_First(Node* start);
+void delete_Last(Node* start);
+void delete_After(Node* start);
+void delete_Before(Node* start);
+void travel_List();
+
+void insert_Beginning(Node* start) {
+    
+    Node* new;
+    int num;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = num;
+    new->Prev = NULL;
+    new->Next = start;
+    start->Prev = new;
+    head = new;
+    
+
+
+}
+void insert_End(Node* start) {
+    Node* new, * ptr;
+    int num;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = num;
+    new->Next = NULL;
+    ptr = start;
+    while (ptr->Next != NULL) {
+        ptr = ptr->Next;
+    }
+    ptr->Next = new;
+    new->Prev = ptr;
+
+}
+
+void insert_After(Node* start) {
+    Node* new, * ptr;
+    int num, val;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &val);
+    printf("어떤 데이터 뒤에 삽입하고싶나요?\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = val;
+    ptr = start;
+    while (ptr->data != num) {
+        ptr = ptr->Next;
+
+    }
+
+    new->Next = ptr->Next;
+    new->Prev = ptr;
+    ptr->Next = new;
+    ptr->Next->Prev = new;
+
+}
+
+void insert_Before(Node* start) {
+    Node* new, * ptr;
+    int num, val;
+    printf("데이터를 입력하세요.\n");
+    scanf("%d", &val);
+    printf("어떤 데이터 앞에 삽입하고싶나요?\n");
+    scanf("%d", &num);
+    new = (Node*)malloc(sizeof(Node));
+    new->data = val;
+    ptr = start;
+    while (ptr->data != num) {
+        ptr = ptr->Next;
+
+    }
+    new->Next = ptr;
+    new->Prev = ptr->Prev;
+    ptr->Prev = new;
+    ptr->Prev->Next = new;
+}
+
+void delete_First(Node* start) {
+
+    if (start->Next->Next == NULL) {
+        printf("Underflow\n");
+        return;
+    }
+  
+    head = start->Next;
+    head->Prev = NULL;
+    free(start);
+
+}
+
+void delete_Last(Node* start) {
+    if (start->Next->Next == NULL) {
+        printf("Underflow\n");
+        return;
+    }
+    Node* ptr;
+    ptr = start;
+    while (ptr->Next != NULL) {
+        ptr = ptr->Next;
+    }
+    ptr->Prev->Next = NULL;
+    free(ptr);
+}
+
+void delete_After(Node* start) {
+    if (start->Next->Next == NULL) {
+        printf("Underflow\n");
+        return;
+    }
+    Node* ptr;
+    Node* temp;
+    int num;
+    printf("어떤 데이터 뒤의 노드를 삭제하고싶나요?\n");
+    scanf("%d", &num);
+    ptr = start;
+    while (ptr->data != num) {
+        ptr = ptr->Next;
+    }
+    temp = ptr->Next;
+    ptr->Next = temp->Next;
+    temp->Next->Prev = ptr;
+    free(temp);
+
+}
+
+void delete_Before(Node* start) {
+    if (start->Next->Next == NULL) {
+        printf("Underflow\n");
+        return;
+    }
+    Node* ptr;
+    Node* temp;
+    int num;
+    printf("어떤 데이터 앞의 노드를 삭제하고싶나요?\n");
+    scanf("%d", &num);
+    ptr = start;
+    while (ptr->data != num) {
+        ptr = ptr->Next;
+    }
+    temp = ptr->Prev;
+    temp->Prev->Next = ptr;
+    ptr->Prev = temp->Prev;
+    free(temp);
+
+}
+void travel_List() {
+    Node* ptr;
+
+    ptr = head;
+    while (ptr->Next != NULL) {
+        printf("%d ", ptr->data);
+        ptr = ptr->Next;
+    }
+    printf("%d\n", ptr->data);
+
+}
+
+int main()
+{
+    head = (Node*)malloc(sizeof(Node));
+    head->data = 10;
+    head->Prev = NULL;
+    tail = (Node*)malloc(sizeof(Node));
+    tail->data = 20;
+    tail->Next = NULL;
+
+    head->Next = tail;
+    tail->Prev = head;
+
+    insert_Beginning(head);
+    travel_List();
+    
+    insert_End(head);
+    travel_List();
+
+    insert_After(head);
+    travel_List();
+    
+    insert_Before(head);
+    travel_List();
+
+    delete_First(head);
+    travel_List();
+
+    delete_Last(head);
+    travel_List();
+
+    delete_After(head);
+    travel_List();
+
+    delete_Before(head);
+    travel_List();
+
+
+
+
+    return 0;
+}
+
